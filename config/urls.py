@@ -16,7 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from apps.livecalculator.views import live_calculator_view
+from apps.echo.views import room
 
 urlpatterns = [
+    # Django Admin URLs
     path('admin/', admin.site.urls),
+    
+    # Live calculators URLs
+    path('calculator/', live_calculator_view, name='live_calc_page'),
+    
+    # Bingo Game URLs
+    path("bingo/<str:room_name>/", room, name="bingo_room"),
 ]
