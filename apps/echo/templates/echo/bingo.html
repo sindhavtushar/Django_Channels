@@ -1,0 +1,141 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Bingo Room</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f5f7fa;
+        }
+
+        h1 {
+            margin-top: 20px;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(5, 70px);
+            gap: 8px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .cell {
+            width: 70px;
+            height: 70px;
+            border: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            background: white;
+            cursor: pointer;
+        }
+
+        .marked {
+            background: #28a745;
+            color: white;
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        button {
+            padding: 8px 15px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>🎉 Bingo Room: {{ room_name }}</h1>
+
+<div id="status">Connecting...</div>
+
+<button id="startBtn">Start Game</button>
+
+<div id="board"></div>
+
+{{ room_name|json_script:"room-name" }}
+
+<script>
+    const roomName = JSON.parse(document.getElementById('room-name').textContent);
+
+    const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+    const socket = new WebSocket(
+        protocol + window.location.host + "/ws/bingo/" + roomName + "/"
+    );
+
+    socket.onopen = function () {
+        document.getElementById("status").innerText = "Connected ✅";
+
+        socket.send(JSON.stringify({
+            action: "join",
+            room: roomName
+        }));
+    };
+
+    socket.onmessage = function (event) {
+        console.log("Received:", event.data);  
+        const data = JSON.parse(event.data);
+
+        if (data.type === "board") {
+            renderBoard(data.board);
+        }
+
+        if (data.type === "number_drawn") {
+            alert("Number drawn: " + data.number);
+        }
+
+        if (data.type === "winner") {
+            alert("Winner: " + data.player);
+        }
+    };
+
+    socket.onclose = function () {
+        document.getElementById("status").innerText = "Disconnected ❌";
+    };
+
+    function renderBoard(board) {
+        const boardDiv = document.getElementById("board");
+        boardDiv.innerHTML = "";
+
+        board.forEach(row => {
+            row.forEach(number => {
+                const div = document.createElement("div");
+                div.classList.add("cell");
+                div.innerText = number;
+
+                div.addEventListener("click", function () {
+                    div.classList.toggle("marked");
+
+                    socket.send(JSON.stringify({
+                        action: "mark",
+                        number: number,
+                        room: roomName
+                    }));
+                });
+
+                boardDiv.appendChild(div);
+            });
+        });
+    }
+
+    document.getElementById("startBtn").addEventListener("click", function () {
+        socket.send(JSON.stringify({
+            action: "start",
+            room: roomName
+        }));
+    });
+</script>
+
+</body>
+</html>
