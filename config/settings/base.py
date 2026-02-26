@@ -12,12 +12,13 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = 'django-insecure-(#+%ahy*cmgj%mnxjpoqp9z8=upfe%22+9bzrea59_s*5vtsq5'
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "unlugged-hyperanarchic-otelia.ngrok-free.dev"]
 
 INSTALLED_APPS = [
     'channels',
-    'apps.echo',
-    'apps.livecalculator',
+    'apps.echo', # echo and Bingo App
+    'apps.livecalculator', # live calculator App 
+    'apps.chat', # chat App
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -52,7 +53,7 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # --- Channels + Redis ---
 CHANNEL_LAYERS = {
@@ -68,7 +69,7 @@ CHANNEL_LAYERS = {
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # add template directories if needed
+        'DIRS': [BASE_DIR / "templates"],  # add template directories if needed
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
