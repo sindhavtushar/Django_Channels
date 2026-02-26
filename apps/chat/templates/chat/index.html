@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Rooms</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef1f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px;
+            width: 100%;
+            background: #4CAF50;
+            border: none;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Enter Chat Room</h2>
+    <input id="guest-name" type="text" placeholder="Your name (or leave blank)">
+    <input id="room-name-input" type="text" placeholder="Room name">
+    <button id="enter-room">Join</button>
+</div>
+
+<script>
+    function generateGuestName() {
+        const randomNum = Math.floor(Math.random()*1000);
+        return 'Guest' + randomNum;
+    }
+
+    document.querySelector('#enter-room').onclick = function() {
+        let roomName = document.querySelector('#room-name-input').value.trim();
+        let guestName = document.querySelector('#guest-name').value.trim();
+
+        if(!roomName) {
+            alert("Please enter a room name");
+            return;
+        }
+
+        if(!guestName) {
+            guestName = generateGuestName();
+        }
+
+        // store guest name in sessionStorage
+        sessionStorage.setItem('guestName', guestName);
+
+        // redirect to room
+        window.location.pathname = '/chat/' + roomName + '/';
+    };
+
+    document.querySelector('#guest-name').addEventListener("keyup", function(e){
+        if(e.key === "Enter") document.querySelector('#enter-room').click();
+    });
+
+    document.querySelector('#room-name-input').addEventListener("keyup", function(e){
+        if(e.key === "Enter") document.querySelector('#enter-room').click();
+    });
+</script>
+
+</body>
+</html>

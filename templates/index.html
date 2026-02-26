@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+</head>
+<body>
+    <h1>Welcome to Django Channels Practice</h1>
+    <p>Project Navigation</p>
+
+    <ul>
+        <li><a href="{% url 'live_calc_page' %}">Calculator</a></li>
+        <li><a href="{% url 'bingo_room' room_name='testroom' %}">Bingo Room</a></li>
+        <li><a href="/chat/">Chat</a></li>
+        <li><a href="/admin/">Admin</a></li>
+    </ul>
+
+</body>
+</html>
